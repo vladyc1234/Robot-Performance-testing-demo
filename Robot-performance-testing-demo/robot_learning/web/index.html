@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>User registration practice</title>
+<h1>Create a user</h1>
+<form id="registration" novalidate>
+  <label for="name">Name</label>
+  <input id="name" name="name" autocomplete="off">
+  <button id="save" type="submit">Save user</button>
+</form>
+<p id="status" role="status"></p>
+<script>
+document.querySelector('#registration').addEventListener('submit', async event => {
+  event.preventDefault();
+  const status = document.querySelector('#status');
+  status.textContent = 'Saving...';
+  try {
+    const response = await fetch('/api/users', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name: document.querySelector('#name').value})
+    });
+    const data = await response.json();
+    status.textContent = response.ok ? `Created user: ${data.name}` : data.error;
+  } catch (error) {
+    status.textContent = 'Could not contact the API';
+  }
+});
+</script>
+</html>
